@@ -69,9 +69,9 @@ test.describe("插件管理", () => {
     await harness.install(pluginSource.gitInsight);
     await harness.login(page, `/plugins/${GIT_INSIGHT}`);
     await expect(page.getByTestId("plugin-title")).toHaveText("Git Insight");
-    // Plugins start on first use; until then the page says when the sandbox applies.
+    // The timeline on the landing page may already have activated this plugin.
     await page.getByRole("tab", { name: "健康与日志" }).click();
-    await expect(page.getByTestId("plugin-sandbox")).toHaveText("Seatbelt 沙箱：插件启动时启用");
+    await expect(page.getByTestId("plugin-sandbox")).toHaveText(/^Seatbelt 沙箱：(插件启动时启用|已启用)$/);
 
     await page.getByRole("tab", { name: "设置" }).click();
     await page.locator("[data-field=maxCommits] input").fill("50");
