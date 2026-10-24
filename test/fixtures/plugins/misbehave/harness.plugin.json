@@ -1,0 +1,37 @@
+{
+  "id": "dev.test.misbehave",
+  "name": "Misbehave",
+  "version": "0.0.1",
+  "description": "Raw-protocol test plugin (no SDK) that can crash, hang, leak memory and try to escape its sandbox.",
+  "engines": { "harness": ">=0.1.0" },
+  "runtime": { "type": "node", "entry": "index.mjs", "protocol": [1] },
+  "contributes": {
+    "tools": [
+      { "name": "echo", "description": "Echo arguments", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "crash", "description": "Exit the process", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "throw_async", "description": "Throw an uncaught exception", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "hang", "description": "Block the event loop forever", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "slow", "description": "Answer after 10s", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "oom", "description": "Allocate until the heap limit", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "escape", "description": "Try direct fs / spawn / network access", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "env_dump", "description": "List visible environment variables", "risk": "read", "inputSchema": { "type": "object" } },
+      { "name": "host_call", "description": "Call a host function", "risk": "read", "inputSchema": { "type": "object" } }
+    ],
+    "hooks": [{ "event": "tool.before", "order": 10, "critical": true }]
+  },
+  "permissions": {
+    "optional": [
+      { "id": "session.modify", "reason": "test: allow hook modifications" },
+      { "id": "hooks.critical", "reason": "test: fail-closed hook" },
+      { "id": "net.fetch", "scope": ["*"], "reason": "test: runtime permission requests" }
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "startup": { "enum": ["ok", "exit", "silent", "garbage", "undeclared", "badproto"], "default": "ok" },
+      "hookMode": { "enum": ["continue", "block", "modify", "throw", "slow"], "default": "continue" }
+    }
+  },
+  "limits": { "memoryMb": 64 }
+}

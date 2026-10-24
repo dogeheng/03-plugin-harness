@@ -1,0 +1,22 @@
+{
+  "name": "@harness-plugins/git-insight",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Harness plugin: understand local Git repositories (TypeScript, process runtime)",
+  "scripts": {
+    "build": "../../scripts/rt.sh node ../../scripts/build-plugins.ts git-insight"
+  },
+  "devDependencies": {
+    "@harness/plugin-sdk": "workspace:*"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

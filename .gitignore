@@ -1,0 +1,16 @@
+node_modules/
+.runtime/
+.tools/
+dist/
+coverage/
+*.log
+.DS_Store
+.harness-dev/
+test-results/
+playwright-report/
+target/
+*.harnessplugin
+!fixtures/**/*.harnessplugin
+.env
+.env.*
+.work/

@@ -1,0 +1,11 @@
+{
+  "id": "dev.test.py-min",
+  "name": "Python Minimal",
+  "version": "0.0.1",
+  "description": "Python plugin used to check that Python plugins never run without the OS sandbox.",
+  "engines": { "harness": ">=0.1.0" },
+  "runtime": { "type": "python", "entry": "main.py", "protocol": [1] },
+  "contributes": {
+    "tools": [{ "name": "py_echo", "description": "Echo", "risk": "read", "inputSchema": { "type": "object" } }]
+  }
+}

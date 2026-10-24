@@ -1,0 +1,153 @@
+:root {
+  --bg: var(--hx-bg, #ffffff);
+  --fg: var(--hx-fg, #1d1d1f);
+  --muted: var(--hx-muted, #6e6e73);
+  --border: var(--hx-border, #e5e5ea);
+  --card: var(--hx-card, #f5f5f7);
+  --accent: var(--hx-accent, #0a84ff);
+  --success: var(--hx-success, #30a46c);
+  --danger: var(--hx-danger, #e5484d);
+  --radius: var(--hx-radius, 8px);
+  --font: var(--hx-font, -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", sans-serif);
+  --mono: var(--hx-mono, ui-monospace, "SF Mono", Menlo, monospace);
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+.bar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 1;
+}
+.title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.branch {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sub {
+  color: var(--muted);
+  font-size: 12px;
+}
+button {
+  font: inherit;
+  font-size: 12px;
+  color: var(--fg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+button:hover {
+  border-color: var(--accent);
+}
+main {
+  padding: 4px 0 16px;
+}
+.day {
+  padding: 10px 12px 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.commit {
+  position: relative;
+  margin: 0 8px;
+  padding: 7px 8px 7px 26px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.commit::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.commit::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+}
+.commit:hover,
+.commit[aria-expanded="true"] {
+  background: var(--card);
+}
+.subject {
+  display: block;
+  font-weight: 500;
+  word-break: break-word;
+}
+.meta {
+  display: flex;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.hash {
+  font-family: var(--mono);
+}
+.files {
+  margin: 6px 0 2px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+.file {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 1px 0;
+}
+.file .path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.add {
+  color: var(--success);
+}
+.del {
+  color: var(--danger);
+}
+.note,
+.error {
+  margin: 16px 12px;
+  color: var(--muted);
+}
+.error {
+  color: var(--danger);
+}

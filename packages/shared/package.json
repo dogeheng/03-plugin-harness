@@ -1,0 +1,21 @@
+{
+  "name": "@harness/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "pino": "^10.4.0"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

@@ -1,0 +1,33 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"includes": [
+			"**",
+			"!!**/node_modules",
+			"!!**/.runtime",
+			"!!**/.work",
+			"!!**/dist"
+		]
+	},
+	"linter": {
+		"rules": {
+			"preset": "none",
+			"correctness": {
+				"noUnreachable": "error",
+				"noUnreachableSuper": "error",
+				"noUnsafeFinally": "error",
+				"noInvalidBuiltinInstantiation": "error"
+			}
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	}
+}

@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens. The same values are sent to plugin panels as --hx-* (see lib/theme.ts). */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f6f6f8;
+  --bg-sidebar: #f2f2f5;
+  --card: #ffffff;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --border: #e3e3e8;
+  --border-strong: #cfcfd6;
+  --accent: #0a6cff;
+  --accent-fg: #ffffff;
+  --accent-soft: #e8f0ff;
+  --success: #1f9d55;
+  --success-soft: #e6f6ec;
+  --warning: #b7791f;
+  --warning-soft: #fdf3e1;
+  --danger: #d93a3f;
+  --danger-soft: #fdeaea;
+  --radius: 10px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.06);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #161618;
+  --bg-subtle: #1c1c1f;
+  --bg-sidebar: #1a1a1d;
+  --card: #1f1f22;
+  --fg: #f2f2f5;
+  --muted: #9a9aa3;
+  --border: #2c2c31;
+  --border-strong: #3a3a41;
+  --accent: #3b8cff;
+  --accent-fg: #ffffff;
+  --accent-soft: #1b2a44;
+  --success: #3fbf74;
+  --success-soft: #16301f;
+  --warning: #e0a43a;
+  --warning-soft: #352a14;
+  --danger: #f2585d;
+  --danger-soft: #3a1b1d;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-card: var(--card);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --font-sans: var(--font);
+  --font-mono: var(--mono);
+  --radius-lg: var(--radius);
+  --shadow-card: var(--shadow);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 13.5px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  border-color: var(--border);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Thin, unobtrusive scrollbars (WebKit / Chromium). */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* Markdown in assistant messages. */
+.prose-chat > * + * {
+  margin-top: 0.6em;
+}
+.prose-chat ul {
+  list-style: disc;
+  padding-left: 1.3em;
+}
+.prose-chat ol {
+  list-style: decimal;
+  padding-left: 1.3em;
+}
+.prose-chat code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0 4px;
+}
+.prose-chat pre {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+.prose-chat pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.prose-chat a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-chat h1,
+.prose-chat h2,
+.prose-chat h3 {
+  font-weight: 600;
+  font-size: 1.05em;
+}
+.prose-chat table {
+  border-collapse: collapse;
+}
+.prose-chat th,
+.prose-chat td {
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Entry point for the `harness` CLI. Always runs on the pinned Node runtime.
+set -euo pipefail
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SOURCE" ]]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+ROOT="$(cd -P "$(dirname "$SOURCE")/.." && pwd)"
+NODE="$ROOT/.runtime/node/bin/node"
+if [[ ! -x "$NODE" ]]; then
+  "$ROOT/scripts/fetch-runtime.sh" >&2
+fi
+export HARNESS_CLI_MAIN=1
+exec "$NODE" --disable-warning=ExperimentalWarning "$ROOT/apps/cli/src/main.ts" "$@"

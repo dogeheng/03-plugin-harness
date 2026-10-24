@@ -1,0 +1,41 @@
+{
+  "name": "harness-monorepo",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Local plugin-extensible agent runtime with a CLI, web UI and macOS process isolation",
+  "packageManager": "pnpm@12.15.0",
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "scripts": {
+    "runtime": "./scripts/fetch-runtime.sh",
+    "test": "./scripts/rt.sh vitest run",
+    "test:watch": "./scripts/rt.sh vitest",
+    "typecheck": "./scripts/rt.sh tsc -p tsconfig.json --noEmit && pnpm --filter @harness/web typecheck",
+    "lint": "./scripts/rt.sh biome lint .",
+    "build:plugins": "./scripts/rt.sh node scripts/build-plugins.ts",
+    "build:web": "pnpm --filter @harness/web build",
+    "check:boundaries": "./scripts/rt.sh node scripts/check-boundaries.ts",
+    "test:e2e": "./scripts/rt.sh playwright test",
+    "e2e:install": "PLAYWRIGHT_BROWSERS_PATH=.runtime/playwright ./scripts/rt.sh playwright install webkit",
+    "build": "pnpm build:plugins && pnpm build:web"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.3",
+    "@playwright/test": "1.64.1",
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

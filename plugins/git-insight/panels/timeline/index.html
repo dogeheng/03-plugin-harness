@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>提交时间线</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <div class="title">
+        <span class="branch" id="branch">…</span>
+        <span class="sub" id="summary">正在读取仓库…</span>
+      </div>
+      <button id="refresh" type="button" title="刷新">刷新</button>
+    </header>
+    <main id="list" aria-live="polite"></main>
+    <script src="./main.js"></script>
+  </body>
+</html>

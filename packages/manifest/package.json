@@ -1,0 +1,29 @@
+{
+  "name": "@harness/manifest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "harness.plugin.json schema, validation, permission catalog and scope matching",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@harness/protocol": "workspace:*",
+    "ajv": "^8.20.0",
+    "picomatch": "^4.0.7",
+    "semver": "^7.8.5"
+  },
+  "devDependencies": {
+    "@types/picomatch": "^4.0.2",
+    "@types/semver": "^7.7.1"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

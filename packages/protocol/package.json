@@ -1,0 +1,19 @@
+{
+  "name": "@harness/protocol",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Harness Plugin Protocol (HPP) v1: JSON-RPC 2.0 over NDJSON stdio. Dependency-free so it can be bundled into plugins.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

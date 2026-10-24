@@ -1,0 +1,25 @@
+packages:
+  - apps/*
+  - packages/*
+  - plugins/*
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@ai-sdk/anthropic@4.0.88'
+  - '@ai-sdk/gateway@4.0.126'
+  - '@ai-sdk/openai-compatible@3.0.78'
+  - '@ai-sdk/openai@4.0.102'
+  - '@ai-sdk/provider-utils@5.0.68'
+  - '@ai-sdk/provider@4.0.34'
+  - '@biomejs/biome@2.6.3'
+  - '@biomejs/cli-android-arm64@2.6.3'
+  - '@biomejs/cli-android-x64@2.6.3'
+  - '@biomejs/cli-darwin-arm64@2.6.3'
+  - '@biomejs/cli-darwin-x64@2.6.3'
+  - '@biomejs/cli-linux-arm64-musl@2.6.3'
+  - '@biomejs/cli-linux-arm64@2.6.3'
+  - '@biomejs/cli-linux-x64-musl@2.6.3'
+  - '@biomejs/cli-linux-x64@2.6.3'
+  - '@biomejs/cli-win32-arm64@2.6.3'
+  - '@biomejs/cli-win32-x64@2.6.3'
+  - ai@7.0.153

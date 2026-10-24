@@ -1,0 +1,14 @@
+{
+  "id": "dev.test.panel-probe",
+  "name": "Panel Probe (test fixture)",
+  "version": "1.0.0",
+  "description": "Test fixture: a declarative plugin whose panel tries to escape its sandbox and reports what was blocked.",
+  "engines": { "harness": ">=0.1.0" },
+  "runtime": { "type": "none" },
+  "contributes": {
+    "panels": [{ "id": "probe", "title": "隔离探针", "entry": "panel/index.html", "location": "sidebar" }]
+  },
+  "permissions": {
+    "required": [{ "id": "ui.panel", "reason": "test: show the probe panel" }]
+  }
+}

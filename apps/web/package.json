@@ -1,0 +1,46 @@
+{
+  "name": "@harness/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Harness local Web UI (served by the daemon on 127.0.0.1)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@harness/shared": "workspace:*",
+    "@tanstack/react-query": "^5.104.5",
+    "@tanstack/react-router": "^1.170.46",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "lucide-react": "^1.61.0",
+    "radix-ui": "^1.8.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

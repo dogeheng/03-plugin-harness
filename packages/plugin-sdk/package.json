@@ -1,0 +1,25 @@
+{
+  "name": "@harness/plugin-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TypeScript SDK for Harness plugins (HPP v1)",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testkit": "./src/testkit.ts",
+    "./panel": "./src/panel.ts"
+  },
+  "dependencies": {
+    "@harness/protocol": "workspace:*",
+    "zod": "^4.6.7"
+  },
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dogeheng/03-plugin-harness.git"
+  }
+}

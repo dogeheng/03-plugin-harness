@@ -1,0 +1,185 @@
+{
+  "$schema": "../../packages/manifest/schema/harness.plugin.schema.json",
+  "id": "dev.harness.git-insight",
+  "name": "Git Insight",
+  "version": "1.0.0",
+  "description": "让 Agent 读懂本地 Git 仓库：工作区状态、提交历史、差异统计，并能一键生成变更日志。",
+  "author": {
+    "name": "Yuki Li",
+    "url": "https://github.com/dogeheng"
+  },
+  "license": "MIT",
+  "engines": {
+    "harness": ">=0.1.0 <1.0.0"
+  },
+  "runtime": {
+    "type": "node",
+    "entry": "dist/index.mjs",
+    "protocol": [
+      1
+    ]
+  },
+  "activation": [
+    "onTool:git_*",
+    "onCommand:changelog",
+    "onPanel:timeline"
+  ],
+  "contributes": {
+    "tools": [
+      {
+        "name": "git_status",
+        "title": "仓库状态",
+        "description": "Show the current branch, ahead/behind counts, and staged, unstaged, untracked and conflicted files of the workspace Git repository.",
+        "risk": "read",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "git_log",
+        "title": "提交历史",
+        "description": "List recent commits (hash, author, ISO date, subject) of the workspace Git repository. Supports filtering by time, author and path.",
+        "risk": "read",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 20,
+              "description": "Maximum number of commits"
+            },
+            "since": {
+              "type": "string",
+              "description": "Only commits after this time, e.g. '1 week ago' or '2026-10-01'"
+            },
+            "author": {
+              "type": "string",
+              "description": "Only commits whose author matches this text"
+            },
+            "path": {
+              "type": "string",
+              "description": "Only commits touching this path (relative to the repository root)"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "git_diff_summary",
+        "title": "差异统计",
+        "description": "Summarise changes between two revisions: files changed with added/deleted line counts and totals.",
+        "risk": "read",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "Base revision, e.g. a tag, branch or 'HEAD~5'"
+            },
+            "to": {
+              "type": "string",
+              "default": "HEAD",
+              "description": "Target revision (default HEAD)"
+            }
+          },
+          "required": [
+            "from"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ],
+    "commands": [
+      {
+        "name": "changelog",
+        "description": "根据上一个 tag 以来的提交生成变更日志",
+        "args": "[--since <tag>] [--to <rev>]"
+      }
+    ],
+    "panels": [
+      {
+        "id": "timeline",
+        "title": "提交时间线",
+        "entry": "dist/panels/timeline/index.html",
+        "location": "sidebar",
+        "capabilities": [
+          "tools.call"
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "required": [
+      {
+        "id": "process.spawn",
+        "scope": [
+          {
+            "cmd": "git",
+            "subcommands": [
+              "status",
+              "log",
+              "diff",
+              "describe",
+              "rev-parse",
+              "version"
+            ],
+            "denyArgs": [
+              "-c",
+              "--exec",
+              "--upload-pack",
+              "--output",
+              "--ext-diff",
+              "--textconv",
+              "--no-index"
+            ]
+          }
+        ],
+        "reason": "运行只读的 git 命令（status/log/diff 等）读取仓库信息；不会修改仓库"
+      },
+      {
+        "id": "ui.panel",
+        "reason": "在会话侧栏显示提交时间线；面板不能联网，只能调用本插件的只读工具"
+      }
+    ],
+    "optional": [
+      {
+        "id": "llm.invoke",
+        "reason": "把提交记录润色成面向用户的变更说明。不授权时使用模板生成"
+      }
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "maxCommits": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 200,
+        "title": "最多读取的提交数"
+      },
+      "changelogLang": {
+        "enum": [
+          "zh-CN",
+          "en"
+        ],
+        "default": "zh-CN",
+        "title": "变更日志语言"
+      },
+      "polish": {
+        "type": "boolean",
+        "default": true,
+        "title": "用模型润色变更日志（需要授予“调用模型”权限）"
+      }
+    },
+    "additionalProperties": false
+  },
+  "limits": {
+    "callTimeoutMs": 30000,
+    "memoryMb": 128
+  }
+}

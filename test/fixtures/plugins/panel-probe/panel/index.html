@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>probe</title>
+  </head>
+  <body>
+    <h1>Isolation probe</h1>
+    <form id="f" action="https://example.com/form" method="post"><input name="leak" value="1" /></form>
+    <pre id="results">running</pre>
+    <button id="submit-probe" type="button">try form submission</button>
+    <button id="escape" type="button">navigate away</button>
+    <script src="./probe.js"></script>
+  </body>
+</html>
