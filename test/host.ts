@@ -8,7 +8,8 @@ import { createMockModel, type MockScript } from "../apps/daemon/src/models/mock
 import { FIXTURES_DIR, forceRemove, PLUGINS_DIR } from "./helpers.ts";
 
 export const FAST_TIMING = {
-  handshakeMs: 1500,
+  // Hosted macOS workers can take longer to spawn a sandboxed Node process.
+  handshakeMs: process.env.CI ? 5000 : 1500,
   heartbeatMs: 150,
   heartbeatTimeoutMs: 100,
   heartbeatMisses: 2,

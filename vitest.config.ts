@@ -7,6 +7,7 @@ export default defineConfig({
     testTimeout: 30_000,
     hookTimeout: 30_000,
     pool: "forks",
+    maxWorkers: process.env.CI ? 2 : undefined,
     globalSetup: ["test/global-setup.ts"],
     env: {
       HARNESS_SECRETS_BACKEND: "memory",

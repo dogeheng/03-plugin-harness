@@ -140,7 +140,7 @@ describe("panel bridge requests (relayed by the UI to /api/plugins/:id/panels/:p
     expect((await panelGet(`/${GIT}/timeline/`)).text).toContain("提交时间线");
     expect((await panelGet(`/${GIT}/timeline/main.js`)).status).toBe(200);
     const r = await api("POST", `/api/plugins/${GIT}/panels/timeline/call`, { method: "tools/call", params: { name: "git_log", arguments: { limit: 10 } }, workspace: repo.dir });
-    expect(r.status).toBe(200);
+    expect(r.status, r.text).toBe(200);
     const out = r.json<{ ok: boolean; output: { commits: Array<{ subject: string }> } }>();
     expect(out.ok).toBe(true);
     expect(out.output.commits.map((c) => c.subject)).toEqual(["docs: third", "fix: second", "feat: first"]);
