@@ -144,6 +144,11 @@ test.describe("会话", () => {
     const card = page.locator("[data-testid=tool-card][data-tool=crash]");
     await expect(card).toHaveAttribute("data-status", "error");
     await expect(card).toContainText(/退出|崩溃|exit/);
+    // A fresh transcript must preserve the failure, not turn it into a successful call.
+    await expect(page.getByTestId("msg-assistant").last()).toContainText("崩溃");
+    await page.reload();
+    await expect(card).toHaveAttribute("data-status", "error");
+    await expect(card).toContainText(/退出|崩溃|exit/);
     // The host is unaffected: another plugin keeps working in the same session.
     await page.getByTestId("composer").fill("最近改了什么");
     await page.getByTestId("composer").press("Enter");

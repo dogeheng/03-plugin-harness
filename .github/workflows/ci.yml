@@ -20,3 +20,10 @@ jobs:
       - run: pnpm test
       - run: pnpm build
       - run: pnpm test:e2e --project=chrome
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-test-diagnostics
+          path: .work/e2e-results/
+          include-hidden-files: true
+          retention-days: 7

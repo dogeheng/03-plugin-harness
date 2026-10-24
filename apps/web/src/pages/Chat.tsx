@@ -10,70 +10,12 @@ import { useCommandRunner, useCommands } from "../components/Commands.tsx";
 import { useConfig, usePanels } from "../components/Layout.tsx";
 import { PanelFrame } from "../components/PanelFrame.tsx";
 import { Badge, Button, Code, Empty, Json, Tabs, TabsList, TabsTrigger, Textarea, Tooltip } from "../components/ui.tsx";
-import { api, type CommandInfo, errorText, type PanelInfo, type Session, type StoredMessage } from "../lib/api.ts";
+import { api, type CommandInfo, errorText, type PanelInfo, type Session, type StoredMessage, type StoredToolCall } from "../lib/api.ts";
+import { fromHistory, retireSyncedTurns, type Item, type LiveTurn, type ToolStatus } from "../lib/transcript.ts";
 import { useHostEvents } from "../lib/events.ts";
 import { cn, relTime, TOOL_RISK_LABEL } from "../lib/utils.ts";
 
 // ---- view model ---------------------------------------------------------------------
-
-type ToolStatus = "running" | "awaiting" | "ok" | "error" | "blocked";
-type Item =
-  | { kind: "user"; id: string; text: string }
-  | { kind: "assistant"; id: string; text: string }
-  | { kind: "tool"; id: string; toolName: string; pluginId: string | null; risk?: string; input: unknown; status: ToolStatus; output?: unknown; error?: { message: string; data?: unknown }; durationMs?: number; blockedBy?: string }
-  | { kind: "notice"; id: string; level: "info" | "warn" | "error"; message: string; pluginId?: string | null }
-  | { kind: "error"; id: string; message: string; hint?: string };
-
-interface LiveTurn {
-  turnId: string | null;
-  items: Item[];
-  ended: boolean;
-}
-
-const textOf = (content: unknown): string => {
-  if (typeof content === "string") return content;
-  if (Array.isArray(content))
-    return content
-      .filter((p): p is { type: "text"; text: string } => p?.type === "text")
-      .map((p) => p.text)
-      .join("");
-  return "";
-};
-
-/** Rebuild the transcript from persisted AI SDK ModelMessages. */
-function fromHistory(messages: StoredMessage[]): Item[] {
-  const items: Item[] = [];
-  const tools = new Map<string, Extract<Item, { kind: "tool" }>>();
-  for (const m of messages) {
-    const c = m.content.content;
-    if (m.role === "user") items.push({ kind: "user", id: m.id, text: textOf(c) });
-    else if (m.role === "assistant") {
-      const parts = Array.isArray(c) ? c : [{ type: "text", text: String(c ?? "") }];
-      parts.forEach((p: { type: string; text?: string; toolCallId?: string; toolName?: string; input?: unknown }, i: number) => {
-        if (p.type === "text" && p.text) items.push({ kind: "assistant", id: `${m.id}:${i}`, text: p.text });
-        if (p.type === "tool-call" && p.toolCallId) {
-          const t: Extract<Item, { kind: "tool" }> = { kind: "tool", id: p.toolCallId, toolName: p.toolName ?? "?", pluginId: null, input: p.input, status: "ok" };
-          tools.set(p.toolCallId, t);
-          items.push(t);
-        }
-      });
-    } else if (m.role === "tool" && Array.isArray(c)) {
-      for (const r of c as Array<{ toolCallId: string; output?: { type: string; value: unknown } }>) {
-        const t = tools.get(r.toolCallId);
-        if (!t) continue;
-        const isErr = r.output?.type?.startsWith("error");
-        t.status = isErr ? "error" : "ok";
-        t.output = r.output?.value;
-        const v = r.output?.value as { blockedBy?: string } | undefined;
-        if (v && typeof v === "object" && v.blockedBy) {
-          t.status = "blocked";
-          t.blockedBy = v.blockedBy;
-        }
-      }
-    }
-  }
-  return items;
-}
 
 function applyEvent(turns: LiveTurn[], e: HostEvent): LiveTurn[] {
   if (!("turnId" in e) && e.type !== "approval.resolved") return turns;
@@ -125,10 +67,12 @@ function applyEvent(turns: LiveTurn[], e: HostEvent): LiveTurn[] {
       const data = e.error.data as { hint?: string } | undefined;
       items.push({ kind: "error", id: `${e.turnId}:e`, message: e.error.message, hint: data?.hint });
       turn.ended = true;
+      turn.endedAt = performance.now();
       break;
     }
     case "turn.end":
       turn.ended = true;
+      turn.endedAt = performance.now();
       break;
   }
   return next;
@@ -329,7 +273,11 @@ export function ChatPage() {
   const session = useQuery({
     queryKey: ["session", currentId],
     enabled: !!currentId,
-    queryFn: () => api<{ session: Session; messages: StoredMessage[]; running: boolean }>(`/api/sessions/${currentId}`),
+    queryFn: async () => {
+      const requestedAt = performance.now();
+      const result = await api<{ session: Session; messages: StoredMessage[]; toolCalls: StoredToolCall[]; running: boolean }>(`/api/sessions/${currentId}`);
+      return { ...result, requestedAt };
+    },
     refetchOnWindowFocus: false,
   });
   const commands = useCommands();
@@ -344,17 +292,29 @@ export function ChatPage() {
   // keyed on session id
   useEffect(() => setLive([]), [currentId]);
   // on refetch only
-  useEffect(() => setLive((l) => l.filter((t) => !t.ended)), [session.dataUpdatedAt]);
+  useEffect(() => {
+    if (session.data) setLive((l) => retireSyncedTurns(l, session.data.requestedAt));
+  }, [session.dataUpdatedAt]);
 
   useHostEvents((e) => {
     if (!currentId || !("sessionId" in e) || e.sessionId !== currentId) return;
     setLive((l) => applyEvent(l, e));
-    if (e.type === "turn.end" || e.type === "turn.error") void qc.invalidateQueries({ queryKey: ["sessions"] });
+    if (e.type === "turn.end" || e.type === "turn.error") {
+      void qc.invalidateQueries({ queryKey: ["sessions"] });
+      // Cancel any snapshot requested before persistence finished, then fetch fresh history.
+      const queryKey = ["session", currentId];
+      void qc.cancelQueries({ queryKey, exact: true })
+        .then(() => qc.invalidateQueries({ queryKey, exact: true }));
+    }
   });
 
-  const history = useMemo(() => fromHistory(session.data?.messages ?? []), [session.data]);
-  const items = [...history, ...live.flatMap((t) => t.items)];
-  const running = live.some((t) => !t.ended) || (session.data?.running ?? false);
+  const history = useMemo(() => fromHistory(session.data?.messages ?? [], session.data?.toolCalls ?? []), [session.data]);
+  // Reconcile during rendering too, so there is no frame with both live and persisted cards.
+  const visibleLive = retireSyncedTurns(live, session.data?.requestedAt ?? -Infinity);
+  const liveItems = visibleLive.flatMap((t) => t.items);
+  const liveToolIds = new Set(liveItems.filter((item) => item.kind === "tool").map((item) => item.id));
+  const items = [...history.filter((item) => item.kind !== "tool" || !liveToolIds.has(item.id)), ...liveItems];
+  const running = visibleLive.some((t) => !t.ended) || (session.data?.running ?? false);
   const workspace = session.data?.session.workspace ?? config.data?.workspace ?? null;
 
   // scroll on new content

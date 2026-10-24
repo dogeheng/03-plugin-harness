@@ -145,7 +145,7 @@ export function buildApp(daemon: Daemon, transport: Transport): Hono {
     const s = daemon.sessions.get(c.req.param("id"));
     if (!s) return c.json({ error: { code: ErrorCode.InvalidParams, message: "会话不存在" } }, 404);
     const messages = daemon.sessions.messages(s.id).map((m) => ({ id: m.id, seq: m.seq, role: m.role, content: JSON.parse(m.content), createdAt: m.created_at }));
-    return c.json({ session: s, messages, running: daemon.runtime.isRunning(s.id) });
+    return c.json({ session: s, messages, toolCalls: daemon.toolCalls.summariesForSession(s.id), running: daemon.runtime.isRunning(s.id) });
   });
 
   app.delete("/api/sessions/:id", (c) => {

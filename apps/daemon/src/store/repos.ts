@@ -135,6 +135,9 @@ export class ToolCallRepo {
     if (pluginId) return this.db.prepare("SELECT * FROM tool_calls WHERE plugin_id = ? ORDER BY started_at DESC LIMIT ?").all(pluginId, limit);
     return this.db.prepare("SELECT * FROM tool_calls ORDER BY started_at DESC LIMIT ?").all(limit);
   }
+  summariesForSession(sessionId: string): unknown[] {
+    return this.db.prepare("SELECT id, plugin_id, status, error, duration_ms FROM tool_calls WHERE session_id = ? ORDER BY started_at").all(sessionId);
+  }
 }
 
 export class AuditRepo {

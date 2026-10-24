@@ -207,6 +207,14 @@ export interface StoredMessage {
   createdAt: string;
 }
 
+export interface StoredToolCall {
+  id: string;
+  plugin_id: string | null;
+  status: "ok" | "error" | "denied" | "blocked";
+  error: string | null;
+  duration_ms: number;
+}
+
 export interface CommandInfo {
   name: string;
   pluginId: string;
