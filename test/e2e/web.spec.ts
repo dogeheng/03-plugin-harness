@@ -146,6 +146,9 @@ test.describe("会话", () => {
     await expect(card).toContainText(/退出|崩溃|exit/);
     // A fresh transcript must preserve the failure, not turn it into a successful call.
     await expect(page.getByTestId("msg-assistant").last()).toContainText("崩溃");
+    await expect.poll(() => harness.host.plugins.get(MISBEHAVE)?.instance?.state).toBe("active");
+    // Finish recovery-triggered queries before deliberately navigating away.
+    await page.waitForLoadState("networkidle");
     await page.reload();
     await expect(card).toHaveAttribute("data-status", "error");
     await expect(card).toContainText(/退出|崩溃|exit/);
